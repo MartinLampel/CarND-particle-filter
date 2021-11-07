@@ -115,5 +115,62 @@ You can find the inputs to the particle filter in the `data` directory.
 
 # Implementation Details
 
+The constructor of the Particle Filter class sets up the number of particles, vectors for the particles and the weights. 
+
+The particle filter executes follow steps:
+
+1. Prediction
+2. Weight Update
+3. Partice Resampling
+
+These steps are implemented in this methods:
+
+```
+  void prediction(double delta_t, double std_pos[], double velocity, 
+                  double yaw_rate);
+```
+
+Predicts the next position of the particles based on the actual velocity and yaw rate. 
+Add random noise to the predicted positions. 
+
+```
+  void updateWeights(double sensor_range, double std_landmark[], 
+                     const std::vector<LandmarkObs> &observations,
+                     const Map &map_landmarks);
+```
+
+Update the weights for each particle. It uses the observations to compute
+the likelihood, which is the new particle weight. 
+It transforms the observations to each particle. After the transformations 
+the landmarks in sensor range are selected. 
+Each observation is associated with a landmark. After these steps 
+the new weight is computed by using a multivariate gaussian distribution for
+the likelihood.
+
+```
+  /**
+   * resample Resamples from the updated set of particles to form
+   *   the new set of particles.
+   */
+  void resample();
+```
+
+Resamples the paricles based on the weights from the previous step. 
+To perform the resampling, a discrete_distribution from the C++ std library was used. 
+This generates a new particle set based on the weights for the particles. 
+
+
+
+
 # Results
 
+The number of particles is set to 256.
+The time for particle filter depends lot on the number of particles.
+With 256 particles the required system was 60. I've also executed the
+particle filter with 1024 particles. The system time is then between 90 and 100.
+
+Since the higher particle number lead to no improvement with the error, the particle number is fixed with 256.
+
+Finally, the particle filter can locate the robot with a high accuracy.
+
+![](images/final.png)
