@@ -148,10 +148,6 @@ the new weight is computed by using a multivariate gaussian distribution for
 the likelihood.
 
 ```
-  /**
-   * resample Resamples from the updated set of particles to form
-   *   the new set of particles.
-   */
   void resample();
 ```
 
